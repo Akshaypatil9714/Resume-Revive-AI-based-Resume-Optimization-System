@@ -1,0 +1,1279 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Resume Revive</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        html, body {
+            width:100%; 
+            height:100%; 
+            padding:0px; 
+            margin:0px;
+            overflow: hidden;
+            background: #191d1e; /* Old browsers */
+            background: -moz-linear-gradient(0deg,  #191d1e 50%, #283139 100%); /* FF3.6+ */
+            background: -webkit-gradient(linear, left top, right bottom, color-stop(50%,#191d1e), color-stop(100%,#283139)); /* Chrome,Safari4+ */
+            background: -webkit-linear-gradient(0deg,  #191d1e 50%,#283139 100%); /* Chrome10+,Safari5.1+ */
+            background: -o-linear-gradient(0deg,  #191d1e 50%,#283139 100%); /* Opera 11.10+ */
+            background: -ms-linear-gradient(0deg,  #191d1e 50%,#283139 100%); /* IE10+ */
+            background: linear-gradient(0deg,  #191d1e 50%,#283139 100%); /* W3C */
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#191d1e', endColorstr='#283139',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+            {% comment %} background-attachment: fixed {% endcomment %}
+            overflow: auto; 
+        }
+        
+        #projector {
+          position: absolute; 
+          top: 0px;
+          left: 0px;
+          width:100%;
+          height:100%;
+          z-index: 0;
+        } 
+        
+        .center-div {
+            width:580px;
+            height:374px;
+            position:absolute;
+            left:50%;
+            top:50%;
+            margin-left: -290px;
+            margin-top:  -187px;
+            z-index: 1;
+            position: absolute;
+        }
+        
+        #preloaderDiv
+        {
+            position:absolute;
+            left:50%;
+            top:50%;
+            margin-left: -27px;
+            margin-top:  -27px;
+        }
+        
+        #logo{
+            opacity:0;
+            filter: alpha(opacity=0);
+        }
+        
+        #date2014
+        {
+            position:absolute;
+            padding-left: 210px;
+            padding-top:15px;
+            opacity:0;
+            top:303px;
+            left:0;
+            filter: alpha(opacity=0);
+        }
+          
+        body {font-family: Arial, Helvetica, sans-serif; padding: 30px}
+        * {box-sizing: border-box;}
+
+        .content-layer {
+            position: relative;
+            z-index: 1; /* Ensure content is above the background */
+        }
+
+        /* Set a style for all buttons */
+        button {
+            background-color: #04AA6D;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            font-family: sans-serif;
+            font-size: 16px;
+            border-radius: 0.3rem;
+            cursor: pointer;
+            width: 100%;
+            opacity: 0.9;
+        }
+
+        button:hover {
+            opacity:1;
+        }
+
+        /* Position the sign out button at the top right corner */
+        .signout-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        
+        .btn-custom {
+            background-color: #04AA6D;  /* A different color for distinction */
+            color: white;
+            padding: 7px 35px;  /* Slightly smaller padding for a refined look */
+            margin: auto;  /* Add some space above the button */
+            border: none;
+            font-family: sans-serif;
+            font-size: 16px;
+            border-radius: 0.3rem;
+            cursor: pointer;
+            width: auto;  /* Auto width based on content */
+            display: block;  /* Block display to make it a separate element */
+            text-align: center;  /* Center the text inside the button */
+        }
+    
+        .btn-custom:hover {
+            background-color: #0056b3;  /* Darker shade on hover */
+            opacity: 0.8;  /* Slight transparency effect on hover */
+        }
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: auto;
+            margin-top: 20%;
+        }
+    
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .highlight {
+            background-color: #f8d7da;
+        }
+        
+        .text-content {
+            white-space: pre-wrap;
+        }
+        .highlight {
+            background-color: #f8d7da;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .tooltip {
+            visibility: hidden;
+            width: 280px;
+            background-color: #f9f9f9;
+            color: #000;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+            position: absolute;
+            z-index: 1;
+            bottom: 100%;
+            left: 50%;
+            margin-left: -140px;
+            box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.2);
+        }
+        
+        .highlight:hover .tooltip {
+            visibility: visible;
+        }
+        details {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px;
+            margin-top: 10px;
+        }
+
+        summary {
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        summary:hover {
+            color: #888;
+        }
+
+        .text-analysis-content {
+            padding: 10px;
+            background: #f9f9f9;
+            border-top: 1px solid #ccc;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f4f4f4;
+            color: black
+        }
+        label {
+            color: white;
+          }
+          
+          #file-chosen{
+            margin-left: 0.3rem;
+            font-family: sans-serif;
+          }
+        h2{
+            font-family:Phosphate;
+            font-size: 70px;
+            color: white;
+        }
+        button, .signout-button, form, .alert {
+            z-index: 2; /* Higher z-index for interactivity */
+        }
+
+        {% comment %} .progress {
+            width: 160px; /* Size of the circle */
+            height: 160px; /* Size of the circle */
+            background: none;
+            position: relative;
+            margin: 45px auto; /* Center the progress bar */
+            border-radius: 50%;
+            box-shadow: inset 0 0 5px #000; /* Optional: adds inner shadow for better depth */
+        }
+        
+        .progress:after {
+            content: "";
+            width: 93%;
+            height: 94%;
+            border-radius: 50%;
+            border: 6px solid #eee; /* Light grey border */
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1; /* Ensures this layer is below the progress bars but above the background */
+        }
+        
+        .progress > span {
+            width: 50%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            clip: rect(0, 80px, 160px, 0); /* Essential for half-circle clipping */
+            z-index: 2; /* Ensures this layer is above the ':after' pseudo-element */
+        }
+        
+        .progress-left {
+            left: 0;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 101%;
+            background: none;
+            border: 6px solid #04AA6D; /* Dark green progress bar */
+            position: absolute;
+            top: 0;
+        }
+        
+        .progress-left .progress-bar {
+            left: 100%;
+            border-top-right-radius: 80px; /* Ensures rounded edge at the end */
+            border-bottom-right-radius: 80px; /* Ensures rounded edge at the end */
+            border-left: 0; /* Removes left border */
+            transform-origin: center left;
+            transform: rotate(0deg); /* Initialized rotation */
+            transition: transform 0.5s ease-in-out; /* Smooth transition for rotation */
+        }
+        
+        .progress-right {
+            right: 0;
+        }
+        
+        .progress-right .progress-bar {
+            left: -100%;
+            border-top-left-radius: 80px; /* Ensures rounded edge at the end */
+            border-bottom-left-radius: 80px; /* Ensures rounded edge at the end */
+            border-right: 0; /* Removes right border */
+            transform-origin: center right;
+            transform: rotate(0deg); /* Initialized rotation */
+            transition: transform 0.5s ease-in-out; /* Smooth transition for rotation */
+        }
+        
+        .progress-value {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #fff; /* Makes the text color white for better visibility */
+            z-index: 3; /* Ensures text is above all */
+        }         {% endcomment %}
+
+          
+          .mt-100{
+            margin-top: 20px;
+          }
+          .progress {
+            width: 150px;
+            height: 150px !important;
+            float: left; 
+            line-height: 150px;
+            background: none;
+            margin: 20px;
+            box-shadow: none;
+            position: relative;
+          }
+          .progress:after {
+            content: "";
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 12px solid #fff;
+            position: absolute;
+            top: 0;
+            left: 0;
+          }
+          .progress>span {
+            width: 50%;
+            height: 100%;
+            overflow: hidden;
+            position: absolute;
+            top: 0;
+            z-index: 1;
+          }
+          .progress .progress-left {
+            left: 0;
+          }
+          .progress .progress-bar {
+            width: 100%;
+            height: 100%;
+            background: none;
+            border-width: 12px;
+            border-style: solid;
+            position: absolute;
+            top: 0;
+          }
+          .progress .progress-left .progress-bar {
+            left: 100%;
+            border-top-right-radius: 80px;
+            border-bottom-right-radius: 80px;
+            border-left: 0;
+            -webkit-transform-origin: center left;
+            transform-origin: center left;
+          }
+          .progress .progress-right {
+            right: 0;
+          }
+          .progress .progress-right .progress-bar {
+            left: -100%;
+            border-top-left-radius: 80px;
+            border-bottom-left-radius: 80px;
+            border-right: 0;
+            -webkit-transform-origin: center right;
+            transform-origin: center right;
+            animation: loading-1 1.8s linear forwards;
+          }
+          .progress .progress-value {
+            width: 90%;
+            height: 90%;
+            border-radius: 50%;
+            font-size: 24px;
+            color: #fff;
+            line-height: 135px;
+            text-align: center;
+            position: absolute;
+            top: 5%;
+            left: 5%;
+          }
+          .progress.blue .progress-bar {
+            border-color: #049dff;
+          }
+          {% comment %} .progress.blue .progress-left .progress-bar {
+            animation: loading-2 1.5s linear forwards 1.8s;
+          } {% endcomment %}
+          {% comment %} .progress.yellow .progress-bar {
+            border-color: #fdba04;
+          }
+          .progress.yellow .progress-right .progress-bar {
+            animation: loading-3 1.8s linear forwards;
+          }
+          .progress.yellow .progress-left .progress-bar {
+            animation: none;
+          } {% endcomment %}
+          {% comment %} @keyframes loading-1 {
+            0% {
+              -webkit-transform: rotate(0deg);
+              transform: rotate(0deg);
+            }
+            100% {
+              -webkit-transform: rotate(180deg);
+              transform: rotate(180deg);
+            }
+          }
+          @keyframes loading-2 {
+            0% {
+              -webkit-transform: rotate(0deg);
+              transform: rotate(0deg);
+            }
+            100% {
+              -webkit-transform: rotate(144deg);
+              transform: rotate(144deg);
+            }
+          }
+          @keyframes loading-3 {
+            0% {
+              -webkit-transform: rotate(0deg);
+              transform: rotate(0deg);
+            }
+            100% {
+              -webkit-transform: rotate(135deg);
+              transform: rotate(135deg);
+            }
+          } {% endcomment %}
+
+        #suggestionsBox {
+            width: 100%; /* Responsive width */
+            min-height: 150px; /* Sufficient height to display multiple lines of text */
+            color: black; /* Text color */
+            background-color: white; /* Ensures visibility on different backgrounds */
+            border: 1px solid #ccc; /* Adds a subtle border */
+            padding: 8px; /* Adds some padding inside the textarea */
+            box-sizing: border-box; /* Includes padding and border in the width and height */
+        }
+        @media (min-width: 1400px) {
+            .container.upload-container , .view-container{
+                max-width: 674px !important;
+            }
+        }
+    .alert{
+        position:absolute;
+    }
+    .alert-error {
+        --bs-alert-color: var(--bs-success-text-emphasis);
+        --bs-alert-bg: var(--bs-success-bg-subtle);
+        --bs-alert-border-color: var(--bs-success-border-subtle);
+        --bs-alert-link-color: var(--bs-success-text-emphasis);
+    }
+    
+    
+    #analyzeButton{
+        display:none;
+        margin-bottom: 20px;
+    }
+    .section-label{
+        font-size:2.25rem;
+    }
+    .card-red{
+        color: white;
+        background: red;
+        padding: 10px 14px;
+        /* font-size: 3rem; */
+        /* float: right; */
+    }
+    .fa-check{
+        font-size: 2rem;
+        float: right;
+        border: 1px solid;
+        border-radius: 63%;
+        padding: 10px;
+    }
+    .card-green{
+        color: white;
+        background: green;
+        padding: 10px 14px;
+        /* font-size: 3rem; */
+        /* float: right; */
+    }
+    .fa-times{
+        font-size: 2rem;
+        float: right;
+        border: 1px solid;
+        border-radius: 69%;
+        padding: 10px 16px;
+    }
+    #loader{
+        position: absolute;
+        /* display: none; */
+        top: 0;
+        /* left: 50%; */
+        width: 100%;
+        height: 100%;
+        background: #000000bd;
+    }
+    </style>
+
+    {% comment %} <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        crossorigin="anonymous"></script> {% endcomment %}
+</head>
+<body>
+    <div class="content-layer">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        <strong>Message:</strong> {{ message }}
+    </div>
+    {% endfor %}
+
+    
+    <h2 style="text-align:center;">Resume Revive</h2>
+
+    {% if user.is_authenticated %}
+        {% comment %} <div class="upload-button">
+            <button class="btn btn-primary">Upload Resume</button>
+        </div>
+        <div class="view-button">
+            <button class="btn btn-primary">View Uploaded Resume</button>
+        </div> {% endcomment %}
+        <div class="signout-button">
+            <button><a href="/signout">Signout</a></button>
+        </div>
+        {% comment %} <h3>Hello {{ fname }}</h3> {% endcomment %}
+        {% comment %} <p style="color: white;">Click on the "Choose File" button to upload a file:</p> {% endcomment %}
+
+        <div class="container upload-container">
+        <form action="{% url 'upload_file' %}" id="resumeForm" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="formFile" class="form-label">Upload your Resume</label>
+                <input class="form-control" type="file" id="myFile" name="filename">
+              </div>
+              <div class="mb-3">
+                <label for="jobDescription" class="form-label">Enter Job Description</label>
+                <textarea class="form-control" id="jobDescription" name="jobDescription" rows="10"></textarea>
+              </div>
+            <button type="submit" class="btn btn-primary btn-custom">Submit</button>
+          </form>
+        </div>
+
+
+        {% comment %} <form action="{% url 'upload_file' %}" id="resumeForm" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="file" id="myFile" name="filename" style="color: white;"> 
+
+
+             <!-- actual upload which is hidden -->
+            <input type="file" id="myFile" name="filename" hidden/>
+            <!-- our custom upload button -->
+            <label for="myFile">Choose File</label>
+            <!-- name of file chosen -->
+            <span id="file-chosen" style="color: white;"name="filename">No file chosen</span> 
+
+
+
+            <p style="color: white;">Enter Job Description:</p>
+            <textarea id="jobDescription" name="jobDescription" rows="4" cols="50"></textarea><br><br><br>
+            <input id="analyzeButton" type="submit" value="Upload File">
+        </form> {% endcomment %}
+        
+        <!-- Display the entered Job Description -->
+        {% comment %} <h3 style="color: white;">Job Description Review:</h3>
+        <button id="analyzeButton" onclick="displayJobDescription()">Review Job Description</button>
+        <div id="jobDescriptionDisplay" style="background-color: #f4f4f4; color: black; padding: 10px; margin-top: 10px;"></div> {% endcomment %}
+
+        <div class="container view-container">
+        <div class="mb-3">
+            <label for="pdfSelector">View Uploaded Files</label>
+            <select class="form-control" id="pdfSelector" onchange='loadSelectedPdf()'>
+                <option value="">Select a PDF to view</option>
+                {% for file in uploaded_files %}
+                    <option value="{{ file.file.url }}" data-id="{{file.id}}" data-description="{{ file.job_description }}">{{ file.file.name }}</option>
+                {% endfor %}
+            </select>
+          </div>
+          <button type="submit" id="analyzeButton" class="btn btn-primary btn-custom" onclick="analyzePdf()">Analyze PDF</button>
+
+        </div>
+
+        {% comment %} <h3 style="color: white;">View Uploaded Files:</h3>
+            <select id="pdfSelector" onchange='loadSelectedPdf()'>
+            <option value="">Select a PDF to view</option>
+            {% for file in uploaded_files %}
+                <option value="{{ file.file.url }}" data-id="{{file.id}}" data-description="{{ file.job_description }}">{{ file.file.name }}</option>
+
+        {% endfor %}
+        </select> {% endcomment %}
+
+        {% comment %} <button id="analyzeButton" onclick="analyzePdf()">Analyze PDF</button> {% endcomment %}
+        <!-- Container to display Job Description -->
+        <div class="container-fluid">
+            <div class="row">
+              <div class="col-sm-12 col-md-6 col-lg-6">
+                    <div id="jobDescriptionDisplay" style="white-space: pre-wrap;background-color: #f4f4f4; color: black; padding: 10px; margin-top: 10px;height:109vh;overflow-y:scroll;" hidden></div>
+                </div>
+              <div class="col-sm-12 col-md-6 col-lg-6">
+                <iframe id="pdfViewer" style="width:100%;height:112vh;overflow-y:scroll; padding: 10px;" hidden></iframe>
+            </div>
+            </div>
+          </div>
+
+        <div id="analysisResults" hidden>
+            <h3 id="pageCount" style="color:white; font-size: 1.17em; font-weight: bold; margin-top: 2rem; margin-bottom: 1rem;"></h3> <!-- Element to display the page count -->
+            <details id="textAnalysisDetails" hidden>
+                <summary style="color: white">Text Analysis</summary>
+                <div id="textAnalysisContent" class="text-analysis-content" style="white-space: pre-wrap"></div>
+            </details>
+        </div>
+        <div id="loader" style="display: none;">
+            <div class="spinner"></div>
+        </div>
+        
+       {% comment %} <div id="resumeAnalysisResults" style="display: none;">
+            <ul style="margin-top: 2rem;margin-bottom: 2rem;">
+                <li style="color:white;">Email ID: <span id="emailResult"></span></li>
+                <li style="color:white;">Skills: <span id="skillsResult"></span></li>
+                <li style="color:white;">Experience: <span id="experienceResult"></span></li>
+                <li style="color:white;">Education: <span id="educationResult"></span></li>
+            </ul>
+        </div>  {% endcomment %}
+        <div class="container" id="resumeAnalysisResults" style="display: none;">
+            <div class="row">
+              <div class="col-sm-6 col-md-3 col-lg-3">
+                <div class="card">
+                    <div class="card-body">
+                      <span class="section-label">Email Id</span><span id="emailResult"></span>
+                    </div>
+                </div>
+                </div>
+              <div class="col-sm-6 col-md-3 col-lg-3">
+                <div class="card">
+                    <div class="card-body">
+                        <span class="section-label">Skills</span><span id="skillsResult" ></i></span>
+                    </div>
+                </div>
+                </div>
+                <div class="col-sm-6 col-md-3 col-lg-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <span class="section-label">Experience</span><span id="experienceResult"></span>
+                        </div>
+                    </div>
+                </div>
+              <div class="col-sm-6 col-md-3 col-lg-3">
+                <div class="card">
+                    <div class="card-body">
+                        <span class="section-label">Education</span><span id="educationResult"></span>
+                    </div>
+                </div>
+                </div>
+            </div>
+          </div>
+        
+          </div>
+
+
+          {% comment %} <div class="container" id="" style="display: none;">
+            <div class="row">
+              <div class="col-sm-12 col-md-8 col-lg-8">
+                <div class="card">
+                    <div class="card-body">
+                        <div id="skillSuggestionResults" hidden></div>
+                    </div>
+                </div>
+                </div>
+              <div class="col-sm-12 col-md-4 col-lg-4">
+                <div class="card">
+                    <div class="card-body" id="progressBar">
+                        <div class="row d-flex justify-content-center mt-100">
+
+                            <div class="col-md-1" style="width: 12.333333%">
+                                <div class="progress blue">
+                                <span class="progress-left">
+                                                    <span class="progress-bar"></span>
+                                </span>
+                                <span class="progress-right">
+                                                    <span class="progress-bar"></span>
+                                </span>
+                                <div class="progress-value">0%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+          </div> {% endcomment %}
+        
+          </div>
+
+        {% comment %} <div id="resumeAnalysisResults" style="display: none;">
+            <h3 style="color:white; font-size: 1.17em; font-weight: bold; margin-top: 2rem; margin-bottom: 1rem;">Esstential Sections</h3>
+            <div class="container" style="margin-bottom: 20px;">
+                <div class="row">
+                    <div class="col">
+                        <table class="table table-bordered table-striped">
+                            <tr>
+                                <th style="color:white;--bs-table-bg: rgba(0, 0, 0, 0.125);">Email ID</th>
+                                <td style="--bs-table-bg: rgba(0, 0, 0, 0.125); color:white;"><span id="emailResult"></span></td>
+                            </tr>
+                            <tr>
+                                <th style="color:white;--bs-table-bg: rgba(0, 0, 0, 0.125);">Skills</th>
+                                <td style="--bs-table-bg: rgba(0, 0, 0, 0.125); color:white;"><span id="skillsResult" ></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col">
+                        <table class="table table-bordered table-striped">
+                            <tr>
+                                <th style="color:white;--bs-table-bg: rgba(0, 0, 0, 0.125);">Experience</th>
+                                <td style="--bs-table-bg: rgba(0, 0, 0, 0.125); color:white;"><span id="experienceResult"></span></td>
+                            </tr>
+                            <tr>
+                                <th style="color:white;--bs-table-bg: rgba(0, 0, 0, 0.125);">Education</th>
+                                <td style="--bs-table-bg: rgba(0, 0, 0, 0.125); color:white;"><span id="educationResult"></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div> {% endcomment %}
+
+
+        <div id="progressBar" hidden>
+                <div style="margin-right: 0px; color:white; font-size: 1.17em; font-weight: bold; margin-top: 2rem; margin-bottom: 1rem;"> MATCHED PERCENTAGE</div>
+                <div class="row d-flex justify-content-center mt-100">
+
+                    <div class="col-md-1" style="width: 12.333333%">
+                        <div class="progress blue">
+                        <span class="progress-left">
+                                            <span class="progress-bar"></span>
+                        </span>
+                        <span class="progress-right">
+                                            <span class="progress-bar"></span>
+                        </span>
+                        <div class="progress-value">0%</div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+
+            <details id="repetitiveWordsContainer" hidden>
+                <summary style="color: white;">Repetitive Words Analysis</summary>
+                {% comment %} <div id="repetitiveWordsContent" class="text-analysis-content"> {% endcomment %}
+                    <table id="repetitiveWordsTable" style="color: white;">
+                        <thead>
+                            <tr>
+                                <th>Word</th>
+                                <th>Count</th>
+                                <th>Synonyms</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Content will be dynamically filled by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </details>
+            <div id='skillSuggestionResults' hidden>
+            <h3 style="color:white; font-size: 1.17em; font-weight: bold; margin-top: 2rem; margin-bottom: 1rem;">Skills Suggestions<h3>
+                <textarea id="suggestionsBox" style="font-size: 0.6em;"></textarea>
+            </div>
+            
+        </div>
+
+    {% else %}
+        <button style="width:auto;margin:300px 550px"><a href="/signup">Sign Up</a></button>
+        <button style="width:auto;margin:0px -400px"><a href="/signin">Sign In</a></button>
+    {% endif %}
+    </div>
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+
+        <script type="text/javascript">
+            $(document).ready(function() {
+                setTimeout(function() {
+                    $(".alert").fadeOut().empty();
+                }, 3000);
+        
+                document.getElementById("analyzeButton").addEventListener("click", analyzePdf);
+            });
+            
+
+
+            function loadSelectedPdf() {
+                var pdfSelector = document.getElementById('pdfSelector');
+                var selectedPdfUrl = pdfSelector.value;
+                // Get the selected option element
+                var selectedOption = pdfSelector.options[pdfSelector.selectedIndex];
+                // Retrieve the 'data-id' attribute from the selected option
+                var selectedPdfId = selectedOption.getAttribute('data-id');
+                var selectedPdfDescription = selectedOption.getAttribute('data-description'); // Get job description from data attribute
+
+
+                console.log("Selected PDF URL:", selectedPdfUrl);
+                console.log("id", selectedPdfId);
+                $('#analyzeButton').css("display","block");
+                if (selectedPdfUrl) {
+
+                    resetProgressBar();                    
+                    // Hide previous analysis results and clear any displayed data
+                    document.getElementById('analysisResults').hidden = true;
+                    document.getElementById('textAnalysisContent').innerHTML = '';
+                    document.getElementById('pageCount').innerHTML = '';
+                    //document.getElementById('resumeAnalysisResults').style.display = 'none';
+                    document.getElementById('skillSuggestionResults').hidden = true;
+
+
+                    var viewer = document.getElementById('pdfViewer');
+                    viewer.src = "http://127.0.0.1:8000" + selectedPdfUrl;
+                    viewer.hidden = false;
+
+                    var jobDescriptionDisplay = document.getElementById('jobDescriptionDisplay');
+                    jobDescriptionDisplay.innerHTML = selectedPdfDescription;
+                    document.getElementById('jobDescriptionDisplay').hidden = false;
+                }
+                
+            } 
+            
+            {% comment %} function displayPdfAndJobDescription() {
+                var selectedPdfUrl = document.getElementById('pdfSelector').value;
+                var jobDescription = document.getElementById('jobDescription').value;  // Assumes there is a textarea with id 'jobDescription' for input
+            
+                // Display PDF if a valid URL is selected
+                if (selectedPdfUrl) {
+                    var viewer = document.getElementById('pdfViewer');
+                    viewer.src = "http://127.0.0.1:8000" + selectedPdfUrl;
+                    viewer.hidden = false;
+            
+                    // Display Job Description
+                    var jobDescriptionDisplay = document.getElementById('jobDescriptionDisplay');
+                    jobDescriptionDisplay.innerHTML = '<strong>Job Description:</strong><br>' + jobDescription;
+                }
+            } {% endcomment %}
+            
+            function updateResult(elementId, condition) {
+                const element = document.getElementById(elementId);
+                const parentElement = element.closest(".card");
+            
+                if (condition) {
+                    parentElement.classList.add("card-green");
+                    parentElement.classList.remove("card-red");
+                    element.innerHTML = '<i class="fa fa-check" aria-hidden="true"></i>';
+                } else {
+                    parentElement.classList.add("card-red");
+                    parentElement.classList.remove("card-green");
+                    element.innerHTML = '<i class="fa fa-times" aria-hidden="true"></i>';
+                }
+            }
+
+            function analyzePdf() {
+                var pdfUrl = document.getElementById('pdfSelector').value;
+                if (!pdfUrl) {
+                    console.error("No PDF selected");
+                    return;
+                }
+            
+                document.getElementById('loader').style.display = 'block';
+            
+                fetch("{% url 'analyze_pdf' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({ pdf_url: pdfUrl })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById('loader').style.display = 'none';
+                    console.log('Analysis data:', data);
+
+                    if (data.error) {
+                        console.error(data.error);
+                    } else {
+
+                        document.getElementById('analysisResults').hidden = false;
+                
+                        let pageCountContent = `<p>Page count: ${data.page_count}</p>`;
+                        document.getElementById('pageCount').innerHTML = pageCountContent;
+                
+                        if (data.page_count > 1) {
+                            alert(data.message);
+                            document.getElementById('textAnalysisDetails').hidden = true;
+                        } else {
+                            let content = '<div class="text-content">';
+                            let suggestionsContent = '<h3>Suggestions:</h3><ul>';
+                            let currentPosition = 0;
+                            data.errors.forEach((error, index) => {
+                                const beforeError = data.text.substring(currentPosition, error.from_pos);
+                                content += beforeError;
+                
+                                const errorText = data.text.substring(error.from_pos, error.to_pos);
+                                content += `<span class="highlight">${errorText}</span>`;
+                
+                                let suggestionText = error.corrected;
+                                if (suggestionText.match(/^\s*$/)) {
+                                    suggestionText = '[Whitespace]';
+                                }
+                
+                                suggestionsContent += `<li>Error ${index + 1}: "${errorText}" - <br> Suggested correction: ${suggestionText}</li>`;
+                
+                                currentPosition = error.to_pos;
+                                                
+                            });
+
+                            if (data.skillSuggestions && data.skillSuggestions.length > 0) {
+                                document.getElementById('suggestionsBox').value = data.skillSuggestions.join(", ");
+                                document.getElementById('skillSuggestionResults').hidden = false; 
+                            }
+                            if (data.resume_analysis) {
+                                document.getElementById('resumeAnalysisResults').style.display = 'block';
+                                //document.getElementById('emailResult').textContent = data.resume_analysis.email ? '✓' : '✕';
+                                //document.getElementById('skillsResult').textContent = data.resume_analysis.skills ? '✓' : '✕';
+                                //document.getElementById('experienceResult').textContent = data.resume_analysis.experience ? '✓' : '✕';
+                                //document.getElementById('educationResult').textContent = data.resume_analysis.education ? '✓' : '✕';
+
+                                updateResult("emailResult", data.resume_analysis.email);
+                                updateResult("skillsResult", data.resume_analysis.skills);
+                                updateResult("experienceResult", data.resume_analysis.experience);
+                                updateResult("educationResult", data.resume_analysis.education);
+
+                                /*const emailResult = document.getElementById("emailResult");
+                                const emailParent = emailResult.closest(".card");
+
+                                if (data.resume_analysis.email) {
+                                    emailParent.classList.remove("card-red");
+                                    emailParent.classList.add("card-green");
+                                    emailResult.innerHTML = '<i class="fa fa-check" aria-hidden="true"></i>';
+                                } else {
+                                    emailParent.classList.remove("card-green");
+                                    emailParent.classList.add("card-red");
+                                    emailResult.innerHTML = '<i class="fa fa-times" aria-hidden="true"></i>';
+                                }*/
+
+                                /*if (data.resume_analysis.email){
+                                    $("#emailResult").parent().parent().addClass("card-green");
+                                    ("#emailResult").html(`<i class="fa fa-check" aria-hidden="true"></i>`)
+                                }else{
+                                    $("#emailResult").parent().parent().addClass("card-red");
+                                    ("#emailResult").html(`<i class="fa fa-times" aria-hidden="true"></i>`)
+                                }
+                                if (data.resume_analysis.skills){
+                                    $("#skillsResult").parent().parent().addClass("card-green");
+                                    ("#skillsResult").html(`<i class="fa fa-check" aria-hidden="true"></i>`)
+                                }else{
+                                    $("#skillsResult").parent().parent().addClass("card-red");
+                                    ("#skillsResult").html(`<i class="fa fa-times" aria-hidden="true"></i>`)
+                                }
+                                if (data.resume_analysis.experience){
+                                    $("#experienceResult").parent().parent().addClass("card-green");
+                                    ("#experienceResult").html(`<i class="fa fa-check" aria-hidden="true"></i>`)
+                                }else{
+                                    $("#experienceResult").parent().parent().addClass("card-red");
+                                    ("#experienceResult").html(`<i class="fa fa-times" aria-hidden="true"></i>`)
+                                }
+                                if (data.resume_analysis.education){
+                                    $("#educationResult").parent().parent().addClass("card-green");
+                                    ("#educationResult").html(`<i class="fa fa-check" aria-hidden="true"></i>`)
+                                }else{
+                                    $("#educationResult").parent().parent().addClass("card-red");
+                                    ("#educationResult").html(`<i class="fa fa-times" aria-hidden="true"></i>`)
+                                }*/
+                                /*document.getElementById('matchPercentageResult').textContent = data.matchPercentage; */
+                                
+                                
+                            }
+                            // Populate Repetitive Words Table
+                            /*let tableBody = document.getElementById('repetitiveWordsTable').getElementsByTagName('tbody')[0];
+                            tableBody.innerHTML = '';  // Clear previous entries
+                            for (const [word, details] of Object.entries(data.synonyms)) {
+                                let row = tableBody.insertRow();
+                                let cellWord = row.insertCell(0);
+                                let cellCount = row.insertCell(1);
+                                let cellSynonyms = row.insertCell(2);
+
+                                cellWord.innerHTML = word;
+                                cellCount.innerHTML = data.repetitive_words[word];  // Assumes repetitive_words contains counts
+                                cellSynonyms.innerHTML = details.join(', ');
+                            }*/
+
+                            content += data.text.substring(currentPosition) + '</div>';
+                            suggestionsContent += '</ul>';
+                            content += suggestionsContent;
+                            
+                            populateRepetitiveWordsTable(data.repetitiveWords, data.synonyms);
+                            document.getElementById('textAnalysisContent').innerHTML = content;
+                            document.getElementById('textAnalysisDetails').hidden = false;
+                            document.getElementById('repetitiveWordsContainer').hidden = false;
+                            percentage = setProgress(data.matchPercentage);
+                            document.getElementById('progressBar').hidden = false;
+        
+                    }
+                    function populateRepetitiveWordsTable(repetitiveWords, synonyms) {
+                        let tableBody = document.getElementById('repetitiveWordsTable').getElementsByTagName('tbody')[0];
+                        tableBody.innerHTML = '';  // Clear previous entries
+                    
+                        Object.entries(repetitiveWords).forEach(([word, count]) => {
+                            let row = tableBody.insertRow();
+                            let cellWord = row.insertCell(0);
+                            let cellCount = row.insertCell(1);
+                            let cellSynonyms = row.insertCell(2);
+                    
+                            cellWord.textContent = word;
+                            cellCount.textContent = count;
+                            cellSynonyms.textContent = synonyms[word].join(', ');
+                        });
+                    } 
+                }
+            })
+            
+            
+            
+                .catch(error => {
+                    document.getElementById('loader').style.display = 'none';
+                    console.error('Error during analysis:', error);
+                });
+            }
+            
+        </script>
+        <script>
+            function setProgress(percent) {
+                const leftBar = document.querySelector('.progress-left .progress-bar');
+                const rightBar = document.querySelector('.progress-right .progress-bar');
+                const valueDisplay = document.querySelector('.progress-value');
+                valueDisplay.textContent = `${percent}%`;
+            
+                if (percent > 50) {
+                    rightBar.style.transform = 'rotate(180deg)';
+                    leftBar.style.transform = `rotate(${3.6 * (percent - 50)}deg)`;
+                } else {
+                    rightBar.style.transform = `rotate(${3.6 * percent}deg)`;
+                }
+            }
+            function resetProgressBar() {
+                const leftBar = document.querySelector('.progress-left .progress-bar');
+                const rightBar = document.querySelector('.progress-right .progress-bar');
+                const valueDisplay = document.querySelector('.progress-value');
+            
+                // Reset the rotation of the progress bars
+                leftBar.style.transform = 'rotate(0deg)';
+                rightBar.style.transform = 'rotate(0deg)';
+                // Reset the progress value display to 0%
+                valueDisplay.textContent = '0%';
+            }
+        </script>
+        <canvas id="projector"></canvas>
+        <script>
+            var ParticleEngine = (function() {
+                'use strict';
+            
+                function ParticleEngine(canvas_id) {
+                    // enforces new
+                    if (!(this instanceof ParticleEngine)) {
+                        return new ParticleEngine(args);
+                    }
+                    
+                    var _ParticleEngine = this;
+                    this.canvas_id = canvas_id;
+                    this.stage = new createjs.Stage(canvas_id);
+                    this.totalWidth = this.canvasWidth = document.getElementById(canvas_id).width = document.getElementById(canvas_id).offsetWidth;
+                    this.totalHeight = this.canvasHeight = document.getElementById(canvas_id).height = document.getElementById(canvas_id).offsetHeight;
+                    this.compositeStyle = "lighter";
+            
+                    this.particleSettings = [{id:"small", num:300, fromX:0, toX:this.totalWidth, ballwidth:3, alphamax:0.4, areaHeight:.5, color:"#F0F0F0", fill:false}, 
+                                            {id:"medium", num:100, fromX:0, toX:this.totalWidth,  ballwidth:8, alphamax:0.3, areaHeight:1, color:"#C0C0C0", fill:true}, 
+                                            {id:"large", num:10, fromX:0, toX:this.totalWidth, ballwidth:30,  alphamax:0.2, areaHeight:1, color:"#A0A0A0", fill:true}];
+                    this.particleArray = [];
+                    this.lights = [{ellipseWidth:400, ellipseHeight:100, alpha:0.6, offsetX:0, offsetY:0, color:"#D0D0D0"}, 
+                                    {ellipseWidth:350, ellipseHeight:250, alpha:0.3, offsetX:-50, offsetY:0, color:"#B8B8B8"}, 
+                                    {ellipseWidth:100, ellipseHeight:80, alpha:0.2, offsetX:80, offsetY:-50, color:"#F8F8F8"}];
+            
+                    this.stage.compositeOperation = _ParticleEngine.compositeStyle;
+            
+            
+                    function drawBgLight()
+                    {
+                        var light;
+                        var bounds;
+                        var blurFilter;
+                        for (var i = 0, len = _ParticleEngine.lights.length; i < len; i++) {				
+                            light = new createjs.Shape();
+                            light.graphics.beginFill(_ParticleEngine.lights[i].color).drawEllipse(0, 0, _ParticleEngine.lights[i].ellipseWidth, _ParticleEngine.lights[i].ellipseHeight);
+                            light.regX = _ParticleEngine.lights[i].ellipseWidth/2;
+                            light.regY = _ParticleEngine.lights[i].ellipseHeight/2; 
+                            light.y = light.initY = _ParticleEngine.totalHeight/2 + _ParticleEngine.lights[i].offsetY;
+                            light.x = light.initX =_ParticleEngine.totalWidth/2 + _ParticleEngine.lights[i].offsetX;
+            
+                            blurFilter = new createjs.BlurFilter(_ParticleEngine.lights[i].ellipseWidth, _ParticleEngine.lights[i].ellipseHeight, 1);
+                            bounds = blurFilter.getBounds();
+                            light.filters = [blurFilter];
+                            light.cache(bounds.x-_ParticleEngine.lights[i].ellipseWidth/2, bounds.y-_ParticleEngine.lights[i].ellipseHeight/2, bounds.width*2, bounds.height*2);
+                            light.alpha = _ParticleEngine.lights[i].alpha;
+            
+                            light.compositeOperation = "screen";
+                            _ParticleEngine.stage.addChildAt(light, 0);
+            
+                            _ParticleEngine.lights[i].elem = light;
+                        }
+            
+                        TweenMax.fromTo(_ParticleEngine.lights[0].elem, 10, {scaleX:1.5, x:_ParticleEngine.lights[0].elem.initX, y:_ParticleEngine.lights[0].elem.initY},{yoyo:true, repeat:-1, ease:Power1.easeInOut, scaleX:2, scaleY:0.7});
+                        TweenMax.fromTo(_ParticleEngine.lights[1].elem, 12, { x:_ParticleEngine.lights[1].elem.initX, y:_ParticleEngine.lights[1].elem.initY},{delay:5, yoyo:true, repeat:-1, ease:Power1.easeInOut, scaleY:2, scaleX:2, y:_ParticleEngine.totalHeight/2-50, x:_ParticleEngine.totalWidth/2+100});
+                        TweenMax.fromTo(_ParticleEngine.lights[2].elem, 8, { x:_ParticleEngine.lights[2].elem.initX, y:_ParticleEngine.lights[2].elem.initY},{delay:2, yoyo:true, repeat:-1, ease:Power1.easeInOut, scaleY:1.5, scaleX:1.5, y:_ParticleEngine.totalHeight/2, x:_ParticleEngine.totalWidth/2-200});
+                    }
+                    
+                    var blurFilter;
+                    function drawParticles(){
+            
+                        for (var i = 0, len = _ParticleEngine.particleSettings.length; i < len; i++) {
+                            var ball = _ParticleEngine.particleSettings[i];
+            
+                            var circle;
+                            for (var s = 0; s < ball.num; s++ )
+                            {
+                                circle = new createjs.Shape();
+                                if(ball.fill){
+                                    circle.graphics.beginFill(ball.color).drawCircle(0, 0, ball.ballwidth);
+                                    blurFilter = new createjs.BlurFilter(ball.ballwidth/2, ball.ballwidth/2, 1);
+                                    circle.filters = [blurFilter];
+                                    var bounds = blurFilter.getBounds();
+                                    circle.cache(-50+bounds.x, -50+bounds.y, 100+bounds.width, 100+bounds.height);
+                                }else{
+                                    circle.graphics.beginStroke(ball.color).setStrokeStyle(1).drawCircle(0, 0, ball.ballwidth);
+                                }
+                                
+                                circle.alpha = range(0, 0.1);
+                                circle.alphaMax = ball.alphamax;
+                                circle.distance = ball.ballwidth * 2;
+                                circle.ballwidth = ball.ballwidth;
+                                circle.flag = ball.id;
+                                _ParticleEngine.applySettings(circle, ball.fromX, ball.toX, ball.areaHeight);
+                                circle.speed = range(2, 10);
+                                circle.y = circle.initY;
+                                circle.x = circle.initX;
+                                circle.scaleX = circle.scaleY = range(0.3, 1);
+            
+                                _ParticleEngine.stage.addChild(circle);
+                                
+            
+                                animateBall(circle);
+            
+                                _ParticleEngine.particleArray.push(circle);
+                            }
+                        }	
+                    }
+            
+                    this.applySettings = function(circle, positionX, totalWidth, areaHeight)
+                    {
+                        circle.speed = range(1, 3);
+                        circle.initY = weightedRange(0, _ParticleEngine.totalHeight , 1, [_ParticleEngine.totalHeight * (2-areaHeight/2)/4, _ParticleEngine.totalHeight*(2+areaHeight/2)/4], 0.8 );
+                        circle.initX = weightedRange(positionX, totalWidth, 1, [positionX+ ((totalWidth-positionX))/4, positionX+ ((totalWidth-positionX)) * 3/4], 0.6);
+                    }
+            
+                    function animateBall(ball)
+                    {
+                        var scale = range(0.3, 1);
+                        var xpos = range(ball.initX - ball.distance, ball.initX + ball.distance);
+                        var ypos = range(ball.initY - ball.distance, ball.initY + ball.distance);
+                        var speed = ball.speed;
+                        TweenMax.to(ball, speed, {scaleX:scale, scaleY:scale, x:xpos, y:ypos, onComplete:animateBall, onCompleteParams:[ball], ease:Cubic.easeInOut});	
+                        TweenMax.to(ball, speed/2, {alpha:range(0.1, ball.alphaMax), onComplete:fadeout, onCompleteParams:[ball, speed]});	
+                    }	
+            
+                    function fadeout(ball, speed)
+                    {
+                        ball.speed = range(2, 10);
+                        TweenMax.to(ball, speed/2, {alpha:0 });
+                    }
+            
+                    drawBgLight();
+                    drawParticles();
+                }
+            
+                ParticleEngine.prototype.render = function()
+                {
+                    this.stage.update();
+                }
+            
+                ParticleEngine.prototype.resize = function()
+                {
+                    this.totalWidth = this.canvasWidth = document.getElementById(this.canvas_id).width = document.getElementById(this.canvas_id).offsetWidth;
+                    this.totalHeight = this.canvasHeight = document.getElementById(this.canvas_id).height = document.getElementById(this.canvas_id).offsetHeight;
+                    this.render();
+            
+                    for (var i= 0, length = this.particleArray.length; i < length; i++)
+                    {
+                        this.applySettings(this.particleArray[i], 0, this.totalWidth, this.particleArray[i].areaHeight);
+                    }
+            
+                    for (var j = 0, len = this.lights.length; j < len; j++) {
+                        this.lights[j].elem.initY = this.totalHeight/2 + this.lights[j].offsetY;
+                        this.lights[j].elem.initX =this.totalWidth/2 + this.lights[j].offsetX;
+                        TweenMax.to(this.lights[j].elem, .5, {x:this.lights[j].elem.initX, y:this.lights[j].elem.initY});			
+                    }
+                }
+            
+                return ParticleEngine;
+            
+            }());
+            
+            
+            ////////////////////////UTILS//////////////////////////////////////
+            //////////////////////////////////////////////////////////////////
+            
+            function range(min, max)
+            {
+                return min + (max - min) * Math.random();
+            }
+                    
+            function round(num, precision)
+            {
+               var decimal = Math.pow(10, precision);
+               return Math.round(decimal* num) / decimal;
+            }
+            
+            function weightedRange(to, from, decimalPlaces, weightedRange, weightStrength)
+            {
+                if (typeof from === "undefined" || from === null) { 
+                    from = 0; 
+                }
+                if (typeof decimalPlaces === "undefined" || decimalPlaces === null) { 
+                    decimalPlaces = 0; 
+                }
+                if (typeof weightedRange === "undefined" || weightedRange === null) { 
+                    weightedRange = 0; 
+                }
+                if (typeof weightStrength === "undefined" || weightStrength === null) { 
+                    weightStrength = 0; 
+                }
+            
+               var ret
+               if(to == from){return(to);}
+             
+               if(weightedRange && Math.random()<=weightStrength){
+                  ret = round( Math.random()*(weightedRange[1]-weightedRange[0]) + weightedRange[0], decimalPlaces )
+               }else{
+                  ret = round( Math.random()*(to-from)+from, decimalPlaces )
+               }
+               return(ret);
+            }
+            
+            ///////////////// RUN CODE //////////////////////////
+            //////////////////////////////////////////////////////
+            
+            var particles
+            (function(){
+                particles = new ParticleEngine('projector');
+                createjs.Ticker.addEventListener("tick", updateCanvas);
+                window.addEventListener('resize', resizeCanvas, false);
+            
+                function updateCanvas(){
+                    particles.render();
+                }
+            
+                function resizeCanvas(){
+                    particles.resize();
+                }
+            }());
+        </script> 
+</body>
+</html>

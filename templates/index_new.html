@@ -1,0 +1,459 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Resume Revive</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+
+    <style>
+        body {font-family: Arial, Helvetica, sans-serif;}
+        * {box-sizing: border-box;}
+
+        /* Set a style for all buttons */
+        button {
+            background-color: #04AA6D;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            opacity: 0.9;
+        }
+
+        button:hover {
+            opacity:1;
+        }
+
+        /* Position the sign out button at the top right corner */
+        .signout-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        #analyzeButton {
+            background-color: #04AA6D;  /* A different color for distinction */
+            color: white;
+            padding: 10px 15px;  /* Slightly smaller padding for a refined look */
+            margin-top: 10px;  /* Add some space above the button */
+            border: none;
+            cursor: pointer;
+            width: auto;  /* Auto width based on content */
+            display: block;  /* Block display to make it a separate element */
+            text-align: center;  /* Center the text inside the button */
+        }
+    
+        #analyzeButton:hover {
+            background-color: #0056b3;  /* Darker shade on hover */
+            opacity: 0.8;  /* Slight transparency effect on hover */
+        }
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 10px auto;
+        }
+    
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .highlight {
+            background-color: #f8d7da;
+        }
+        
+        .text-content {
+            white-space: pre-wrap;
+        }
+        .highlight {
+            background-color: #f8d7da;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .tooltip {
+            visibility: hidden;
+            width: 280px;
+            background-color: #f9f9f9;
+            color: #000;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+            position: absolute;
+            z-index: 1;
+            bottom: 100%;
+            left: 50%;
+            margin-left: -140px;
+            box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.2);
+        }
+        
+        .highlight:hover .tooltip {
+            visibility: visible;
+        }
+        details {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px;
+            margin-top: 10px;
+        }
+
+        summary {
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        summary:hover {
+            color: #888;
+        }
+
+        .text-analysis-content {
+            padding: 10px;
+            background: #f9f9f9;
+            border-top: 1px solid #ccc;
+            color: #333;
+        }
+        
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        crossorigin="anonymous"></script>
+</head>
+<body>
+
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        <strong>Message:</strong> {{ message }}
+    </div>
+    {% endfor %}
+
+    <h2 style="text-align:center;">Welcome to Resume Revive</h2>
+
+    {% if user.is_authenticated %}
+        <div class="signout-button">
+            <button><a href="/signout">Signout</a></button>
+        </div>
+        <h3>Hello {{ fname }}</h3>
+        <p>Click on the "Choose File" button to upload a file:</p>
+
+        <form action="{% url 'upload_file' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="file" id="myFile" name="filename">
+            <input type="submit" value="Upload File">
+        </form>
+        
+        {% comment %} {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %} {% endcomment %}
+
+        <h3>View Uploaded Files:</h3>
+            <select id="pdfSelector" onchange="loadSelectedPdf()">
+            <option value="">Select a PDF to view</option>
+            {% for file in uploaded_files %}
+                <option value="{{ file.file.url }}">{{ file.file.name }}</option>
+        {% endfor %}
+        </select>
+        <button id="analyzeButton" onclick="analyzePdf()">Analyze PDF</button>
+        <iframe id="pdfViewer" style="width:100%;height:500px;" hidden></iframe>
+
+        <div id="analysisResults" hidden>
+            <p id="pageCount"></p> <!-- Element to display the page count -->
+            <details id="textAnalysisDetails" hidden>
+                <summary>Text Analysis</summary>
+                <div id="textAnalysisContent" class="text-analysis-content"></div>
+            </details>
+        </div>
+        <div id="loader" style="display: none;">
+            <div class="spinner"></div>
+        </div>
+        
+        <div id="resumeAnalysisResults" style="display: none;">
+            <ul>
+                <li>Email ID: <span id="emailResult"></span></li>
+                <li>Skills: <span id="skillsResult"></span></li>
+                <li>Experience: <span id="experienceResult"></span></li>
+                <li>Education: <span id="educationResult"></span></li>
+            </ul>
+        </div>
+
+    {% else %}
+        <button style="width:auto;margin:300px 550px"><a href="/signup">Sign Up</a></button>
+        <button style="width:auto;margin:0px -400px"><a href="/signin">Sign In</a></button>
+    {% endif %}
+     
+    {% comment %} <script type="text/javascript">
+        $(document).ready(function() {
+            setTimeout(function() {
+                $(".alert").fadeOut().empty();
+            }, 3000);
+        });
+
+        function loadSelectedPdf() {
+            var selectedPdfUrl = document.getElementById('pdfSelector').value;
+            console.log("Selected PDF URL:", selectedPdfUrl); // Should log the correct URL
+        
+            if (selectedPdfUrl) {
+                var viewer = document.getElementById('pdfViewer');
+                viewer.src = "http://127.0.0.1:8000" + selectedPdfUrl; // Ensure the full URL is constructed
+                viewer.hidden = false;
+            }
+        } {% endcomment %}
+
+        {% comment %} function analyzePdf() {
+            var pdfUrl = document.getElementById('pdfSelector').value;
+            if (!pdfUrl) {
+                console.error("No PDF selected");
+                return;
+            }
+        
+            // Show the loader
+            document.getElementById('loader').style.display = 'block';
+        
+            fetch("{% url 'analyze_pdf' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ pdf_url: pdfUrl })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Hide the loader
+                document.getElementById('loader').style.display = 'none';
+        
+                if (data.error) {
+                    console.error(data.error);
+                } else {
+                    document.getElementById('analysisResults').hidden = false;
+                    document.getElementById('analysisContent').innerHTML = `Page count: ${data.page_count}<br>Grammar issues: ${data.grammar_issue_count}`;
+                }
+            })
+            .catch(error => {
+                // Hide the loader
+                document.getElementById('loader').style.display = 'none';
+                console.error('Error during analysis:', error);
+            });
+        } {% endcomment %}  <!--working analyze pdf--> 
+
+        <script type="text/javascript">
+            $(document).ready(function() {
+                setTimeout(function() {
+                    $(".alert").fadeOut().empty();
+                }, 3000);
+        
+                document.getElementById("analyzeButton").addEventListener("click", analyzePdf);
+            });
+        
+            function loadSelectedPdf() {
+                var selectedPdfUrl = document.getElementById('pdfSelector').value;
+                console.log("Selected PDF URL:", selectedPdfUrl);
+        
+                if (selectedPdfUrl) {
+                    var viewer = document.getElementById('pdfViewer');
+                    viewer.src = "http://127.0.0.1:8000" + selectedPdfUrl;
+                    viewer.hidden = false;
+                }
+            }
+        
+            {% comment %} function analyzePdf() {
+                var pdfUrl = document.getElementById('pdfSelector').value;
+                if (!pdfUrl) {
+                    console.error("No PDF selected");
+                    return;
+                }
+            
+                document.getElementById('loader').style.display = 'block';
+            
+                fetch("{% url 'analyze_pdf' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({ pdf_url: pdfUrl })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById('loader').style.display = 'none';
+                    console.log('Analysis data:', data);
+            
+                    if (data.error) {
+                        console.error(data.error);
+                    } else {
+                        document.getElementById('analysisResults').hidden = false;
+                        
+                        // Handle page count
+                        let content = `<p>Page count: ${data.page_count}</p>`;
+                        if (data.page_count > 1) {
+                            content += `<p>${data.message}</p>`;
+                            document.getElementById('analysisContent').innerHTML = content;
+                        } else {
+                            // If page count is one, proceed with detailed analysis
+                            content += '<h3>Text Analysis:</h3><div class="text-content">';
+                            let suggestionsContent = '<h3>Suggestions:</h3><ul>';
+                            let currentPosition = 0;
+                            data.errors.forEach((error, index) => {
+                                const beforeError = data.text.substring(currentPosition, error.from_pos);
+                                content += beforeError;
+            
+                                const errorText = data.text.substring(error.from_pos, error.to_pos);
+                                content += `<span class="highlight">${errorText}</span>`;
+            
+                                let suggestionText = error.corrected;
+                                if (suggestionText.match(/^\s*$/)) {
+                                    suggestionText = '[Whitespace]';
+                                }
+            
+                                suggestionsContent += `<li>Error ${index + 1}: "${errorText}" - <br> Suggested correction: ${suggestionText}</li>`;
+            
+                                currentPosition = error.to_pos;
+                            });
+            
+                            content += data.text.substring(currentPosition);
+                            content += '</div>';
+                            suggestionsContent += '</ul>';
+                            
+                            document.getElementById('analysisContent').innerHTML = content + suggestionsContent;
+                        }
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('loader').style.display = 'none';
+                    console.error('Error during analysis:', error);
+                });
+            } {% endcomment %}
+            
+
+            {% comment %} function displayAnalysisResults(data) {
+                document.getElementById('resumeAnalysisResults').style.display = 'block';
+                document.getElementById('emailResult').textContent = data.email ? '✓' : '✕';
+                document.getElementById('skillsResult').textContent = data.skills ? '✓' : '✕';
+                document.getElementById('experienceResult').textContent = data.experience ? '✓' : '✕';
+                document.getElementById('educationResult').textContent = data.education ? '✓' : '✕';
+            } {% endcomment %}
+
+            function analyzePdf() {
+                var pdfUrl = document.getElementById('pdfSelector').value;
+                if (!pdfUrl) {
+                    console.error("No PDF selected");
+                    return;
+                }
+          
+                document.getElementById('loader').style.display = 'block';
+                var progressBar = document.getElementById('loader').querySelector('.progress-bar'); // Assuming a progress bar element exists within the loader
+          
+                fetch("{% url 'analyze_pdf' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({ pdf_url: pdfUrl })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById('loader').style.display = 'none';
+                    progressBar.style.width = '100%'; // Assuming progress bar updates based on width
+          
+                    console.log('Analysis data:', data);
+          
+                    if (data.error) {
+                        console.error(data.error);
+                    } else {
+          
+                        document.getElementById('analysisResults').hidden = false;
+          
+                        let pageCountContent = `<p>Page count: ${data.page_count}</p>`;
+                        document.getElementById('pageCount').innerHTML = pageCountContent;
+          
+                        if (data.page_count > 1) {
+                            document.getElementById('textAnalysisDetails').hidden = true;
+                        } else {
+                            let content = '<div class="text-content">';
+                            let suggestionsContent = '<h3>Suggestions:</h3><ul>';
+                            let currentPosition = 0;
+                            data.errors.forEach((error, index) => {
+                                const beforeError = data.text.substring(currentPosition, error.from_pos);
+                                content += beforeError;
+          
+                                const errorText = data.text.substring(error.from_pos, error.to_pos);
+                                content += `<span class="highlight" data-tooltip="<span class="math-inline">\{error\.corrected\}"\></span>{errorText}</span>`;
+          
+                                let suggestionText = error.corrected;
+                                if (suggestionText.match(/^\s*$/)) {
+                                    suggestionText = '[Whitespace]';
+                                }
+          
+                                suggestionsContent += `<li>Error <span class="math-inline">\{index \+ 1\}\: "</span>{errorText}" - <br> Suggested correction: ${suggestionText}</li>`;
+          
+                                currentPosition = error.to_pos;
+                            });
+                            content += data.text.substring(currentPosition) + '</div>';
+                            suggestionsContent += '</ul>';
+                            content += suggestionsContent;
+          
+                            document.getElementById('textAnalysisContent').innerHTML = content;
+                            document.getElementById('textAnalysisDetails').hidden = false;
+          
+                            // Add tooltip functionality using Javascript libraries like jQuery
+                            $('.highlight').tooltip({
+                                content: function() {
+                                    return $(this).data('tooltip');
+                                }
+                            });
+                        }
+                            if (data.resume_analysis) {
+                                document.getElementById('resumeAnalysisResults').style.display = 'block';
+                                document.getElementById('emailResult').textContent = data.resume_analysis.email ? '✓' : '✕';
+                                document.getElementById('skillsResult').textContent = data.resume_analysis.skills ? '✓' : '✕';
+                                document.getElementById('experienceResult').textContent = data.resume_analysis.experience ? '✓' : '✕';
+                                document.getElementById('educationResult').textContent = data.resume_analysis.education ? '✓' : '✕';
+                        }
+                            content += data.text.substring(currentPosition) + '</div>';
+                            suggestionsContent += '</ul>';
+                            content += suggestionsContent;
+                
+                            document.getElementById('textAnalysisContent').innerHTML = content;
+                            document.getElementById('textAnalysisDetails').hidden = false;
+                    }
+                }
+            })
+                
+                .catch(error => {
+                    document.getElementById('loader').style.display = 'none';
+                    console.error('Error during analysis:', error);
+                });
+            }
+            
+            
+        </script>
+        
+
+</body>
+</html>
