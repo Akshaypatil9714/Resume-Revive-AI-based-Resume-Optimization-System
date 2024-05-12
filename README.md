@@ -1,1 +1,22 @@
 # Resume-Revive
+
+Resume Revive is an advanced resume analysis and optimization tool designed to help job seekers improve their resumes. This system leverages the power of Django for web application management and the BERT (Bidirectional Encoder Representations from Transformers) model for deep natural language processing. It provides users with actionable insights by analyzing resumes against job descriptions, suggesting improvements, identifying key skills, and enhancing overall resume effectiveness to increase the chances of job acquisition.
+
+Features
+Resume Upload: Users can upload their resumes in PDF format.
+
+Job Description Matching: Analyzes resumes against provided job descriptions to suggest essential keywords and skills.
+
+Resume Optimization Suggestions: Offers synonyms for repetitive words, checks grammar, and formats resumes.
+
+User Authentication: Manages user sessions for personalized experience and security.
+
+Installation
+
+Prerequisites
+
+Python 3.8 or higher
+
+Django 3.2
+
+pip and virtualenv
