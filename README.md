@@ -25,17 +25,22 @@ Setup
 
 Create and activate a virtual environment
 virtualenv env
+
 source env/bin/activate  # On Windows use `env\Scripts\activate`
 
 Install the requirements
+
 pip install -r requirements.txt
 
 Run migrations
+
 python manage.py migrate
 
 Start the server
+
 python manage.py runserver
 
 Usage
+
 After installation, visit http://127.0.0.1:8000/ in your web browser to start using the Resume Revive application. Register and log in to upload your resume and a job description, and receive detailed feedback and suggestions.
 
