@@ -75,6 +75,7 @@ button:hover {
 }
 </style>
     <head>
+      <!-- Meta tags for responsive design and character encoding -->
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>Resume Revive</title>
@@ -83,6 +84,7 @@ button:hover {
         <link rel="stylesheet" href="">
     </head>
     <body>
+      <!-- Iterating over messages passed to the template, displaying them in styled alert boxes -->
       {% for message in messages %}
       <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
       <strong>Message:</strong> {{ message }}
@@ -97,8 +99,8 @@ button:hover {
           <div class="container">
             <h1>Sign In</h1>
             <p>Please enter you credentials</p>
-            <hr>
-        
+            <hr> <!-- Visual separator -->
+            <!-- Input fields for username and password -->
             <label for="username"><b>Username</b></label>
             <br>
             <input type="text" placeholder="Enter Username" name="username" id="username" required>
@@ -108,7 +110,7 @@ button:hover {
             <br>
             <input type="password" placeholder="Enter Password" name="psw" id="psw" required>
             <br>
-        
+            <!-- Buttons for cancelling and submitting the form -->
             <div class="clearfix">
               <button type="button" class="cancelbtn"><a href="/">Cancel</a></button>
               <button type="submit" class="signupbtn">Sign In</button>
