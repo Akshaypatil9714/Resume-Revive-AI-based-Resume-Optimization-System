@@ -83,14 +83,15 @@ button:hover {
         <link rel="stylesheet" href="">
     </head>
     <body>
-
+        <!-- Sign up form that submits to a server endpoint -->
         <form action="/signup"  method="post">
+        <!-- Security token for CSRF protection in Django applications -->
         {% csrf_token %}
           <div class="container">
             <h1>Sign Up</h1>
             <p>Please fill in this form to create an account.</p>
             <hr>
-        
+            <!-- Form fields for user input -->
             <label for="username"><b>Username</b></label>
             <br>
             <input type="text" placeholder="Enter Username" name="username" id="username" required>
