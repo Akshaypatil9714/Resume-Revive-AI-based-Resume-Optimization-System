@@ -424,14 +424,15 @@
         </div>
         {% endfor %}
 
-    
+        <!-- Main header and conditional content based on user authentication -->
         <h2 style="text-align:center;">Resume Revive</h2>
 
     {% if user.is_authenticated %}
-        
+        <!-- Signout button -->
         <div class="signout-button">
             <button><a href="/signout">Signout</a></button>
         </div>
+        <!-- Form for uploading resumes -->
         <div class="container upload-container">
             <form action="{% url 'upload_file' %}" id="resumeForm" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
@@ -448,7 +449,7 @@
         </div>
 
 
-    
+        <!-- Container for displaying PDF and job description analysis results -->
         <div class="container view-container">
             <div class="mb-3">
                 <label for="pdfSelector">View Uploaded Files</label>
@@ -477,7 +478,7 @@
 
 
         <h3 id="pageCount" style="color:white; font-size: 1.17em; font-weight: bold; margin-top: 2rem; margin-bottom: 1rem;"></h3>
-
+        <!-- Container to display Essential Sections -->
         <div class="container" id="resumeAnalysisResults" style="display: none;">
             <h3 id="pageCount" style="color:white; font-size: 1.17em; font-weight: bold; margin-top: 2rem; margin-bottom: 1rem;">Essential Sections</h3>
             <div class="row">
@@ -512,6 +513,7 @@
             </div>
         </div>
 
+        <!-- Container to display Skills Suggestion -->
         <div class="container" id="match-parameters">
             <div class="row">
                 <div class="col-sm-6 col-md-8 col-lg-8">
@@ -526,6 +528,7 @@
                         </div>
                     </div>
                 </div>
+                <!-- Container to display Matched Percentage -->
                 <div class="col-sm-6 col-md-4 col-lg-4">
                     <div class="card progress-card">
                         <div class="card-body">
@@ -600,31 +603,32 @@
 
         <script type="text/javascript">
             $(document).ready(function() {
+                // Set a timeout to automatically fade out and empty any alert elements after 3 seconds
                 setTimeout(function() {
                     $(".alert").fadeOut().empty();
                 }, 3000);
-        
+                // Add an event listener for click events on the analyzeButton element, which will trigger the analyzePdf function
                 document.getElementById("analyzeButton").addEventListener("click", analyzePdf);
             });
             
 
-
+            // Function to handle the selection of a PDF from a dropdown menu, loading its details for display and analysis
             function loadSelectedPdf() {
                 var pdfSelector = document.getElementById('pdfSelector');
-                var selectedPdfUrl = pdfSelector.value;
+                var selectedPdfUrl = pdfSelector.value; // Get the currently selected PDF's URL
                 // Get the selected option element
-                var selectedOption = pdfSelector.options[pdfSelector.selectedIndex];
+                var selectedOption = pdfSelector.options[pdfSelector.selectedIndex]; // Get the selected option element
                 // Retrieve the 'data-id' attribute from the selected option
-                var selectedPdfId = selectedOption.getAttribute('data-id');
+                var selectedPdfId = selectedOption.getAttribute('data-id'); // Retrieve custom data attributes
                 var selectedPdfDescription = selectedOption.getAttribute('data-description'); // Get job description from data attribute
 
 
                 console.log("Selected PDF URL:", selectedPdfUrl);
                 console.log("id", selectedPdfId);
-                $('#analyzeButton').css("display","block");
+                $('#analyzeButton').css("display","block"); // Ensure the analyze button is visible
                 if (selectedPdfUrl) {
 
-                    resetProgressBar();                    
+                    resetProgressBar(); // Reset the progress bar to its initial state                    
                     // Hide previous analysis results and clear any displayed data
                     document.getElementById('analysisResults').hidden = true;
                     document.getElementById('textAnalysisContent').innerHTML = '';
@@ -634,17 +638,17 @@
 
 
                     var viewer = document.getElementById('pdfViewer');
-                    viewer.src = "http://127.0.0.1:8000" + selectedPdfUrl;
+                    viewer.src = "http://127.0.0.1:8000" + selectedPdfUrl; // Set the source of the PDF viewer to the selected PDF
                     viewer.hidden = false;
 
                     var jobDescriptionDisplay = document.getElementById('jobDescriptionDisplay');
-                    jobDescriptionDisplay.innerHTML = selectedPdfDescription;
+                    jobDescriptionDisplay.innerHTML = selectedPdfDescription; // Display the job description associated with the PDF
                     document.getElementById('jobDescriptionDisplay').hidden = false;
                 }
                 
             } 
             
-            
+             // Function to update the display based on analysis conditions (e.g., presence of email or skills in a resume)
             function updateResult(elementId, condition) {
                 const element = document.getElementById(elementId);
                 const parentElement = element.closest(".card");
@@ -786,7 +790,7 @@
                 });
             }
             
-        
+            // Function to set progress on a circular progress bar based on the percentage of match
             function setProgress(percent) {
                 const leftBar = document.querySelector('.progress-left .progress-bar');
                 const rightBar = document.querySelector('.progress-right .progress-bar');
@@ -800,6 +804,8 @@
                     rightBar.style.transform = `rotate(${3.6 * percent}deg)`;
                 }
             }
+
+            // Function to reset the progress bar to 0%
             function resetProgressBar() {
                 const leftBar = document.querySelector('.progress-left .progress-bar');
                 const rightBar = document.querySelector('.progress-right .progress-bar');
