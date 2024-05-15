@@ -36,25 +36,29 @@ nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('wordnet', force=True)
 
+# Set of English stopwords
 stop_words = set(stopwords.words('english'))
 
+# Logger setup for debugging and error tracking
 logger = logging.getLogger(__name__)
 
-# Create your views here.
-
+# Home page view: shows files uploaded by the authenticated user
 def home(request):
+    # Check if user is authenticated and fetch related files; otherwise, show no files.
     if request.user.is_authenticated:
         # Fetch only the files uploaded by the logged-in user
         uploaded_files = UploadedFile.objects.filter(user=request.user)
     else:
         # If no user is logged in, do not display any files
         uploaded_files = UploadedFile.objects.none()
+    # Render the home page with the list of uploaded files or an empty list.
     return render(request, "resume_revive/index.html", {'uploaded_files': uploaded_files})
 
+# User signup view: handles user registration
 def signup (request):
     
     if request.method=="POST":
-       
+       # Collect user input from form
         username = request.POST['username']
         firstname = request.POST['firstname']
         lastname = request.POST['lastname']
@@ -62,50 +66,62 @@ def signup (request):
         psw= request.POST['psw']
         psw_repeat= request.POST['psw_repeat']
         
+        # Create new user and save to database
         myuser = User.objects.create_user(username, email, psw)
         myuser.first_name = firstname
         myuser.last_name = lastname
         
         myuser.save()
-        
+        # Display success message and redirect to sign-in page.
         messages.success (request, "Your Account has been successfully created.")
         return redirect('signin')
     
-    
+    # Render the signup form page.
     return render (request, "resume_revive/signup.html")
 
+
+# User signin view: authenticates user and handles login
 def signin(request):
     
     if request.method == 'POST':
+        # Extract username and password from POST data.
         username = request. POST['username']
         psw= request. POST['psw']
         
+        # Authenticate the user with the provided credentials.
         user = authenticate(username=username, password=psw)
         
+        # If authentication is successful, log the user in and redirect to home page.
         if user is not None:
             login (request, user)
             fname = user.first_name
             messages.success (request, "Logged in successfully")
             return redirect('home') 
         else:
+            # If authentication fails, display an error message and redirect back to sign-in.
             messages.error (request, "Bad Credentials!")
             return redirect( 'signin')
     
-    
+     # Render the sign-in form page.
     return render (request, "resume_revive/signin.html")
 
+
+# User signout view: logs out user
 def signout (request):
     logout (request)
     messages.success (request, "Logged Out Successfully!")
     return redirect( 'signin')
 
 
+# File upload view: handles file uploads by authenticated users
 def upload_file(request):
     if request.method == 'POST' and request.FILES.get('filename', None):
+        # Create a timestamp to append to the filename for uniqueness.
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
         file = request.FILES['filename']
         job_description = request.POST.get('jobDescription', '')  # Retrieve job description from POST data
 
+        # Check if the user is authenticated, otherwise redirect to the login page.
         if not request.user.is_authenticated:
             messages.error(request, "You must be logged in to upload files.")
             return redirect('login')  # Redirect to login page or appropriate URL
@@ -117,18 +133,22 @@ def upload_file(request):
         file_content = file.read()
         file_with_timestamp = ContentFile(file_content, name=new_filename)
         
+        # Validate the PDF file format.
         try:
             validate_pdf(file_with_timestamp)
             # Ensure the UploadedFile model includes a user field linked to Django's User model
             uploaded_file = UploadedFile(user=request.user, file=file_with_timestamp, job_description=job_description)
             uploaded_file.save()
+            # Display a success message for file upload.
             messages.success(request, "File and job description uploaded successfully.")
         except ValidationError as e:
+            # Display an error message if the file fails validation.
             messages.error(request, str(e))
 
+    # Redirect to the home page after processing the file upload.
     return redirect('home') # Redirect to a home page or success page
 
-
+# Resume analysis function: identifies key sections and details in resume
 def analyze_resume(resume_content):
     lower_content = resume_content.lower()
     sections_found = {
@@ -139,7 +159,7 @@ def analyze_resume(resume_content):
     }
     return sections_found
 
-
+# Returns synonyms of a given word using NLTK's wordnet
 def get_synonyms(word):
     synonyms = set()
     for syn in wordnet.synsets(word):
@@ -147,6 +167,8 @@ def get_synonyms(word):
             synonyms.add(lemma.name())
     return list(synonyms)
 
+
+# Identifies repetitive words in a text and their synonyms
 def identify_repetitive_words(text):
     words = word_tokenize(text.lower())
     filtered_words = [word for word in words if word.isalnum() and word not in stop_words]
@@ -155,6 +177,8 @@ def identify_repetitive_words(text):
     synonyms = {word: get_synonyms(word) for word in repetitive_words}
     return repetitive_words, synonyms
 
+
+# PDF analysis view: analyzes uploaded PDF for compliance with resume standards
 @csrf_exempt
 @require_POST
 def analyze_pdf(request):
@@ -164,10 +188,12 @@ def analyze_pdf(request):
     pdf_url = body_data.get('pdf_url')
 
     if not pdf_url:
+        # Handle cases where the PDF URL is missing in the request.
         logger.error("No PDF URL provided in the request")
         return JsonResponse({'error': 'No PDF URL provided'}, status=400)
 
     try:
+        # Retrieve the uploaded file using the URL and process the contents.
         uploaded_file = UploadedFile.objects.get(file__endswith=pdf_url.split('/')[-1])
         file_path = uploaded_file.file.path
         job_description = uploaded_file.job_description
@@ -177,6 +203,7 @@ def analyze_pdf(request):
         logger.debug("Page count: %d", page_count)
 
         if page_count > 1:
+            # Ensure the resume is only one page, as required by many employers.
             messages.error(request, "The resume is more than one page")
             logger.info("The resume is more than one page")
             return JsonResponse({
@@ -233,8 +260,10 @@ def analyze_pdf(request):
         })
 
     except UploadedFile.DoesNotExist:
+        # Handle file not found errors gracefully.
         logger.error("Uploaded file does not exist: %s", pdf_url)
         return JsonResponse({'error': 'File not found'}, status=404)
     except Exception as e:
+        # Catch-all for other exceptions to prevent application crashes.
         logger.exception("Unexpected error occurred: %s", str(e))
         return JsonResponse({'error': str(e)}, status=500)
