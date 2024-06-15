@@ -13,7 +13,7 @@ Resume Revive is an advanced resume analysis and optimization tool designed to h
 
 ## Installation
 
-- **Prerequisites**
+**Prerequisites**
 
 - Python 3.8 or higher
 
@@ -23,20 +23,20 @@ Resume Revive is an advanced resume analysis and optimization tool designed to h
 
 ## Setup
 
-- **Create and activate a virtual environment**
+**Create and activate a virtual environment**
 - python3 -m venv env
 
 - source env/bin/activate  # On Windows use `env\Scripts\activate`
 
-- **Install the requirements**
+**Install the requirements**
 
   pip install -r requirements.txt
 
-- **Run migrations**
+**Run migrations**
 
 - python manage.py migrate
 
-- **Start the server**
+**Start the server**
 
 - python manage.py runserver
 
