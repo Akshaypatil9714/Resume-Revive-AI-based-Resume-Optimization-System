@@ -2,45 +2,45 @@
 
 Resume Revive is an advanced resume analysis and optimization tool designed to help job seekers improve their resumes. This system leverages the power of Django for web application management and the BERT (Bidirectional Encoder Representations from Transformers) model for deep natural language processing. It provides users with actionable insights by analyzing resumes against job descriptions, suggesting improvements, identifying key skills, and enhancing overall resume effectiveness to increase the chances of job acquisition.
 
-Features
-Resume Upload: Users can upload their resumes in PDF format.
+## Features
+- Resume Upload: Users can upload their resumes in PDF format.
 
-Job Description Matching: Analyzes resumes against provided job descriptions to suggest essential keywords and skills.
+- Job Description Matching: Analyzes resumes against provided job descriptions to suggest essential keywords and skills.
 
-Resume Optimization Suggestions: Offers synonyms for repetitive words, checks grammar, and formats resumes.
+- Resume Optimization Suggestions: Offers synonyms for repetitive words, checks grammar, and formats resumes.
 
-User Authentication: Manages user sessions for personalized experience and security.
+- User Authentication: Manages user sessions for personalized experience and security.
 
-Installation
+## Installation
 
-Prerequisites
+- **Prerequisites**
 
-Python 3.8 or higher
+- Python 3.8 or higher
 
-Django 3.2
+- Django 3.2
 
-pip and virtualenv
+- pip and virtualenv
 
-Setup
+## Setup
 
-Create and activate a virtual environment
-virtualenv env
+- **Create and activate a virtual environment**
+- python3 -m venv env
 
-source env/bin/activate  # On Windows use `env\Scripts\activate`
+- source env/bin/activate  # On Windows use `env\Scripts\activate`
 
-Install the requirements
+- **Install the requirements**
 
-pip install -r requirements.txt
+  pip install -r requirements.txt
 
-Run migrations
+- **Run migrations**
 
-python manage.py migrate
+- python manage.py migrate
 
-Start the server
+- **Start the server**
 
-python manage.py runserver
+- python manage.py runserver
 
-Usage
+## Usage
 
 After installation, visit http://127.0.0.1:8000/ in your web browser to start using the Resume Revive application. Register and log in to upload your resume and a job description, and receive detailed feedback and suggestions.
 
