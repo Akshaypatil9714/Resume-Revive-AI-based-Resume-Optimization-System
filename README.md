@@ -24,22 +24,25 @@ Resume Revive is an advanced resume analysis and optimization tool designed to h
 ## Setup
 
 **Create and activate a virtual environment**
-- python3 -m venv env
 
-- source env/bin/activate  # On Windows use `env\Scripts\activate`
-
+```bash
+python3 -m venv env
+```
+```bash
+source env/bin/activate  # On Windows use `env\Scripts\activate`
+```
 **Install the requirements**
-
+```bash
   pip install -r requirements.txt
-
+```
 **Run migrations**
-
-- python manage.py migrate
-
+```bash
+python manage.py migrate
+```
 **Start the server**
-
-- python manage.py runserver
-
+```bash
+python manage.py runserver
+```
 ## Usage
 
 After installation, visit http://127.0.0.1:8000/ in your web browser to start using the Resume Revive application. Register and log in to upload your resume and a job description, and receive detailed feedback and suggestions.
