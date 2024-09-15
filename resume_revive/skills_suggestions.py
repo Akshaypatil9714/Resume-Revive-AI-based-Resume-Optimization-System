@@ -10,10 +10,14 @@ from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import RegexpTokenizer
 import nltk
 nltk.download('wordnet')  # Ensure the WordNet data is downloaded for lemmatization
+nltk.download('omw-1.4')
+nltk.download('punkt_tab')
+from google.cloud import aiplatform
+from vertexai.language_models import TextGenerationModel
 
 # Initialize BERT tokenizer and model
-tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-model = BertForSequenceClassification.from_pretrained('/Users/akshaypatil/Resume_revive/saved_model', output_hidden_states=True, num_labels=10)
+tokenizer = BertTokenizer.from_pretrained('/Users/akshaypatil/Resume_revive/bert_finetuned_job_resume')
+model = BertForSequenceClassification.from_pretrained('/Users/akshaypatil/Resume_revive/bert_finetuned_job_resume', output_hidden_states=True)
 
 # Custom stop words specific to resumes
 custom_stop_words = [
@@ -28,6 +32,14 @@ custom_stop_words = [
 
 # Extend the default NLTK stop words with custom ones
 extended_stop_words = list(set(stopwords.words('english')).union(custom_stop_words))
+
+
+# Set your Google Cloud project ID and region
+project_id = "resume-revive"
+region = "us-central1"
+
+# Initialize Vertex AI
+aiplatform.init(project=project_id, location=region)
 
 def preprocess_text(text):
     """Preprocess the given text for NLP tasks. This includes cleaning, lowercasing, removing punctuation,
@@ -48,47 +60,98 @@ def preprocess_text(text):
     return ' '.join(tokens)
 
 def get_bert_embedding(text):
-    """Generate a BERT embedding for the given text using sequence classification model."""
     encoded_input = tokenizer(text, return_tensors='pt', truncation=True, padding=True, max_length=512)
-    with torch.no_grad(): # Ensure gradients are not computed to save resources
-        outputs = model(**encoded_input)
-    return outputs.hidden_states[-1].mean(dim=1).squeeze().numpy() # Return the mean of the last hidden state
+    with torch.no_grad():
+        outputs = model(**encoded_input, output_hidden_states=True)
+    last_hidden_state = outputs.hidden_states[-1]
+    return last_hidden_state.mean(dim=1).squeeze().numpy()
 
 def extract_keywords(text, n=50):
-    """Extract keywords from text using TF-IDF, avoiding redundant subphrases."""
-    # Initialize a CountVectorizer to convert text to a matrix of token counts
-    vectorizer = CountVectorizer(stop_words='english', ngram_range=(1, 3), max_features=1000)
-    X = vectorizer.fit_transform([text])
-    all_keywords = vectorizer.get_feature_names_out()
-
-    # Filter out subphrases of longer phrases
-    filtered_keywords = []
-    all_keywords = sorted(all_keywords, key=len, reverse=True)  # Sort by length of keyword
-    for keyword in all_keywords:
-        if not any(re.search(r'\b' + re.escape(keyword) + r'\b', other) for other in filtered_keywords):
-            filtered_keywords.append(keyword)
+    # Use TF-IDF vectorizer
+    tfidf = TfidfVectorizer(stop_words='english', ngram_range=(1, 3), max_features=1000)
+    tfidf_matrix = tfidf.fit_transform([text])
+    feature_names = tfidf.get_feature_names_out()
     
-    return filtered_keywords[:n]
+    # Get feature scores
+    scores = tfidf_matrix.sum(axis=0).A1
+    
+    # Create a list of (keyword, score) tuples
+    keyword_scores = list(zip(feature_names, scores))
+    
+    # Sort by score and get top n
+    keyword_scores.sort(key=lambda x: x[1], reverse=True)
+    return [kw for kw, score in keyword_scores[:n]]
+
+def match_skills(job_keywords, resume_text):
+    resume_text = preprocess_text(resume_text)
+    matched_skills = []
+    missing_skills = []
+    
+    for keyword in job_keywords:
+        if keyword in resume_text:
+            matched_skills.append(keyword)
+        else:
+            missing_skills.append(keyword)
+    
+    return matched_skills, missing_skills
 
 def suggest_keywords(resume_text, job_desc_text):
-    """Suggest keywords by comparing embeddings."""
-    # Preprocess both resume and job description texts
+    """Suggest keywords by comparing embeddings using the fine-tuned model."""
     preprocessed_resume = preprocess_text(resume_text)
     preprocessed_job_desc = preprocess_text(job_desc_text)
 
-    # Extract keywords from job description using TF-IDF
-    job_desc_keywords = extract_keywords(preprocessed_job_desc)
+    job_desc_keywords = extract_keywords(preprocessed_job_desc, n=50)
+            
+    matched_skills, missing_skills = match_skills(job_desc_keywords, preprocessed_resume)
 
-    # Generate embeddings for resume and each keyword
-    resume_embedding = get_bert_embedding(preprocessed_resume)
-    keyword_embeddings = {kw: get_bert_embedding(kw) for kw in job_desc_keywords}
+    return missing_skills
 
-    # Identify keywords that are not well-represented in the resume
-    missing_keywords = []
-    for kw, emb in keyword_embeddings.items():
-        sim = cosine_similarity([emb], [resume_embedding])
-        if sim[0][0] < 0.5:  # Set a threshold for keyword similarity
-            missing_keywords.append(kw)
+def get_gemini_suggestions(resume_text, job_desc_text, bert_suggestions):
+    aiplatform.init(project='resume-revive', location='us-central1')
+    
+    prompt = f"""
+    Analyze the following resume and job description:
 
-    return missing_keywords
+    Resume: {resume_text}
 
+    Job Description: {job_desc_text}
+
+    BERT model suggestions for missing skills: {bert_suggestions}
+
+    Based on this information, please:
+    1. List the top 10 most relevant skills from the resume for this job.
+    2. Suggest 5 skills or keywords that are missing from the resume but important for the job.
+    3. Provide a brief explanation of why these skills are important for the role.
+    4. Offer 3 specific recommendations to improve the resume for this job application.
+    """
+
+    model = TextGenerationModel.from_pretrained("text-bison@001")
+    response = model.predict(prompt, max_output_tokens=1024, temperature=0.2)
+    
+    return response.text
+
+def suggest_keywords_hybrid(resume_text, job_desc_text):
+    preprocessed_job_desc = preprocess_text(job_desc_text)
+    
+    job_keywords = extract_keywords(preprocessed_job_desc, n=50)
+    
+    matched_skills, missing_skills = match_skills(job_keywords, resume_text)
+    
+    # Use embeddings for additional context
+    resume_embedding = get_bert_embedding(preprocess_text(resume_text))
+    
+    refined_missing_skills = []
+    for skill in missing_skills:
+        skill_embedding = get_bert_embedding(skill)
+        similarity = cosine_similarity([skill_embedding], [resume_embedding])[0][0]
+        if similarity < 0.6:  # Adjust this threshold as needed
+            refined_missing_skills.append(skill)
+    
+    # Get Gemini suggestions
+    try:
+        gemini_suggestions = get_gemini_suggestions(resume_text, job_desc_text, refined_missing_skills)
+    except Exception as e:
+        print(f"Error getting Gemini suggestions: {e}")
+        gemini_suggestions = "Unable to get Gemini suggestions due to an error."
+
+    return gemini_suggestions
