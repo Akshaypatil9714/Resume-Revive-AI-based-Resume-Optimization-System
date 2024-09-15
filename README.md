@@ -41,6 +41,7 @@ source env/bin/activate  # On Windows use `env\Scripts\activate`
 - Set up Google Cloud SDK by following Google Cloud's instructions.
 - Set your project ID:
 ```bash
+  gcloud init
   gcloud config set project resume-revive
 ```
 **Run migrations**
