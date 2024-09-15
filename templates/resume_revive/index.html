@@ -522,7 +522,7 @@
                         <div class="card-body">
 
 
-                                <div id="suggestionsBox"></div>
+                            <textarea id="suggestionsBox" style="width: 100%; height: 150px; background-color: #f8f9fa; color: #343a40; font-size: 1em; border: 1px solid #ced4da; border-radius: 0.25rem; padding: 0.5rem;" readonly></textarea>
 
 
                         </div>
@@ -727,11 +727,11 @@
                             
 
                             if (data.skillSuggestions && data.skillSuggestions.length > 0) {
-                                txt = ``;
-                                for (i = 0; i< data.skillSuggestions.length;i++){
-                                    substring = data.skillSuggestions[i].split(",");
-                                    for (j = 0; j< substring.length;j++){
-                                        txt += `<span class="skill-keywords">${substring[j]}</span>`;
+                                let txt = '';
+                                for (let i = 0; i < data.skillSuggestions.length; i++) {
+                                    let substring = data.skillSuggestions[i].split(',');
+                                    for (let j = 0; j < substring.length; j++) {
+                                        txt += substring[j];
                                     }
                                 }
                                 console.log(txt);
