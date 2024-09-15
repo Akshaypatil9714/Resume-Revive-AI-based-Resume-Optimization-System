@@ -37,7 +37,7 @@ source env/bin/activate  # On Windows use `env\Scripts\activate`
 ```bash
   pip install -r requirements.txt
 ```
-**Configure Google Cloud SDK
+**Configure Google Cloud SDK**
 - Set up Google Cloud SDK by following Google Cloud's instructions.
 - Set your project ID:
 ```bash
