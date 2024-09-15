@@ -21,6 +21,8 @@ Resume Revive is an advanced resume analysis and optimization tool designed to h
 
 - pip and virtualenv
 
+- Google Cloud SDK
+
 ## Setup
 
 **Create and activate a virtual environment**
@@ -34,6 +36,12 @@ source env/bin/activate  # On Windows use `env\Scripts\activate`
 **Install the requirements**
 ```bash
   pip install -r requirements.txt
+```
+**Configure Google Cloud SDK
+- Set up Google Cloud SDK by following Google Cloud's instructions.
+- Set your project ID:
+```bash
+  gcloud config set project resume-revive
 ```
 **Run migrations**
 ```bash
