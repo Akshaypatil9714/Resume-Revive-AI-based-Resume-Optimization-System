@@ -12,8 +12,8 @@ import nltk
 nltk.download('wordnet')  # Ensure the WordNet data is downloaded for lemmatization
 nltk.download('omw-1.4')
 nltk.download('punkt_tab')
-from google.cloud import aiplatform
-from vertexai.language_models import TextGenerationModel
+import google.generativeai as genai
+import os
 
 # Initialize BERT tokenizer and model
 tokenizer = BertTokenizer.from_pretrained('/Users/akshaypatil/Resume_revive/bert_finetuned_job_resume')
@@ -34,12 +34,8 @@ custom_stop_words = [
 extended_stop_words = list(set(stopwords.words('english')).union(custom_stop_words))
 
 
-# Set your Google Cloud project ID and region
-project_id = "resume-revive"
-region = "us-central1"
-
-# Initialize Vertex AI
-aiplatform.init(project=project_id, location=region)
+# Configure the Gemini API
+genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 
 def preprocess_text(text):
     """Preprocess the given text for NLP tasks. This includes cleaning, lowercasing, removing punctuation,
@@ -107,7 +103,7 @@ def suggest_keywords(resume_text, job_desc_text):
     return missing_skills
 
 def get_gemini_suggestions(resume_text, job_desc_text, bert_suggestions):
-    aiplatform.init(project='resume-revive', location='us-central1')
+    model = genai.GenerativeModel('gemini-1.5-flash-001')
     
     prompt = f"""
     Analyze the following resume and job description:
@@ -125,9 +121,7 @@ def get_gemini_suggestions(resume_text, job_desc_text, bert_suggestions):
     4. Offer 3 specific recommendations to improve the resume for this job application.
     """
 
-    model = TextGenerationModel.from_pretrained("text-bison@001")
-    response = model.predict(prompt, max_output_tokens=1024, temperature=0.2)
-    
+    response = model.generate_content(prompt)
     return response.text
 
 def suggest_keywords_hybrid(resume_text, job_desc_text):
